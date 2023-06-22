@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  
+  application:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGO_DB_URL}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_DATABASE: sahinotes_devlopment
+    ports:
+      - "27017:27017"
