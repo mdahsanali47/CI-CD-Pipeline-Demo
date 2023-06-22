@@ -20,9 +20,9 @@ permissions:
 env:
   PROJECT_ID: "note-sharing-390521"
   IMAGE_NAME: "Shahi-Notes-Image"
-  CONTAINER_NAME: "shahi-notes-container"
+  CONTAINER_NAME: "shahi_notes_container"
   REGION: "asia-south1"
-  SERVICE_NAME: "Shahi_Notes-service"
+  SERVICE_NAME: "Shahi_Notes_service"
   REPOSITORY_NAME: "shahi-notes"
   PORT: 8000
   TAG: latest
