@@ -14,8 +14,10 @@ permissions:
   contents: read
 
 env:
-  PROJECT_ID: "note-sharing-390521"
-  REGION: "asia-south1"
+  IMAGE_1: application
+  IMAGE_2: mongodb
+  PROJECT_ID: note-sharing-390521
+  REGION: asia-south1
   TAG: latest
 
 jobs:
@@ -57,6 +59,8 @@ jobs:
           gcloud auth configure-docker ${REGION}-docker.pkg.dev
 
       - name: Push Docker Images to Artifact Registry
+        env:
+          GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
         run: |
           gcloud auth configure-docker ${REGION}-docker.pkg.dev
           docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/application:${{ env.TAG }}
