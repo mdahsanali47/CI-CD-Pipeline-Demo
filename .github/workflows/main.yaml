@@ -63,6 +63,8 @@ jobs:
           GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
         run: |
           gcloud auth configure-docker ${REGION}-docker.pkg.dev
+          docker tag $IMAGE_1:latest ${REGION}-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_1:$GIT_TAG
+          docker tag $IMAGE_2:latest ${REGION}-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_2:$GIT_TAG
           docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/application:${{ env.TAG }}
           docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/mongodb:${{ env.TAG }}
 
