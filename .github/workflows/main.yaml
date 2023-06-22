@@ -46,12 +46,14 @@ jobs:
           docker-compose build
           docker-compose push
 
-      - name: Authenticate with GCP using a service account
-        uses: google-github-actions/setup-gcloud@v1
+      - name: Authenticate with GCP 
+        uses: google-github-actions/auth@v0.5
         with:
-          project_id: ${{ env.PROJECT_ID }}
-          service_account_key: ${{ secrets.SECRET_KEY }}
-          export_default_credentials: true
+          credentials: ${{ secrets.SECRET_KEY }}
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev
 
       - name: Push Docker Images to Artifact Registry
         run: |
