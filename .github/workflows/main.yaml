@@ -42,7 +42,7 @@ jobs:
 
       - name: Run unit tests
         run: echo "Running unit tests"
-        
+
 
   build-and-push-image:
     name: Continuous Delivery
@@ -61,7 +61,7 @@ jobs:
           push: true
           tags: ${{ env.CONTAINER_NAME }}:${{ env.TAG }}
           builder: |
-            docker buildx create --use --name=mybuilder
+            docker buildx create --use --name=${{ IMAGE_NAME }}
             docker buildx build \
               --platform linux/amd64,linux/arm64 \
               --load \
