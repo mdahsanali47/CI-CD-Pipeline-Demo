@@ -19,10 +19,10 @@ permissions:
 # env: Defines environment variables to be used throughout the workflow.
 env:
   PROJECT_ID: "note-sharing-390521"
-  IMAGE_NAME: "Shahi-Notes-Image"
-  CONTAINER_NAME: "shahi_notes_container"
+  IMAGE_NAME: "ShahiNotesImage"
+  CONTAINER_NAME: "ShahiNotesContainer"
   REGION: "asia-south1"
-  SERVICE_NAME: "Shahi_Notes_service"
+  SERVICE_NAME: "Shahi-Notes-service"
   REPOSITORY_NAME: "shahi-notes"
   PORT: 8000
   TAG: latest
