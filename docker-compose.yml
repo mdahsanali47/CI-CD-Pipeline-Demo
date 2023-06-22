@@ -6,7 +6,7 @@ services:
     build: .
     environment:
       - NODE_ENV=production
-      - MONGODB_URI=${MONGO_DB_URL}
+      - MONGODB_URI="mongodb://127.0.0.1:27017/sahinotes_devlopment"
     ports:
       - "8000:8000"
     depends_on:
