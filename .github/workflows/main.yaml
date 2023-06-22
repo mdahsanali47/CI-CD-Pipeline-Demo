@@ -20,12 +20,12 @@ permissions:
 env:
   PROJECT_ID: "note-sharing-390521"
   IMAGE_NAME: "ShahiNotesImage"
-  CONTAINER_NAME: my_Shahi_Notes_Container
+  CONTAINER_NAME: "SahiNotes"
   REGION: "asia-south1"
   SERVICE_NAME: "Shahi-Notes-service"
   REPOSITORY_NAME: "shahi-notes"
   PORT: 8000
-  TAG: latest
+  TAG: ${{ github.sha }}
 
 # jobs: Defines the work to be done by this workflow.
 jobs:
@@ -33,14 +33,23 @@ jobs:
     name: Continuous Integration
     runs-on: ubuntu-latest
     steps:
+      
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+
       - name: Lint code
-        run: echo "Linting repository"
+        run: npm run lint
 
       - name: Run unit tests
-        run: echo "Running unit tests"
+        run: npm run test
 
 
   build-and-push-image:
@@ -65,7 +74,7 @@ jobs:
               --platform linux/amd64,linux/arm64 \
               --load \
               --tag ${{ env.CONTAINER_NAME }}:${{ env.TAG }} \
-              --tag ${{ env.CONTAINER_NAME }}:latest \
+              --tag ${{ env.CONTAINER_NAME }}:${{ env.TAG }} \
               .
       
       # Authenticate with GCP using a service account
