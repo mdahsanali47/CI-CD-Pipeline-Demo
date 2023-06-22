@@ -70,7 +70,7 @@ jobs:
       
       # Authenticate with GCP using a service account
       - name: Configure gcloud
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v2.2.0
         with:
           project_id: ${{ env.PROJECT_ID }}
           service_account_email: "note-sharing@note-sharing-390521.iam.gserviceaccount.com"
