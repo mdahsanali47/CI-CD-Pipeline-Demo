@@ -1,9 +1,7 @@
-# This code is an example GitHub Actions workflow for deploying a Node.js/Express application to Google Cloud Platform (GCP) using a Docker-compose.
+# GitHub Actions workflow for deploying a Node.js/Express application to Google Cloud Platform (GCP) using a Docker-compose.
 
-# name: The name of the workflow.
 name: Deploy to GCP
 
-# on: Indicates when this workflow should run. In this case, it runs when a commit is pushed to the main branch.
 on:
   push:
     branches:
@@ -15,25 +13,16 @@ permissions:
   id-token: write
   contents: read
 
-
-# env: Defines environment variables to be used throughout the workflow.
 env:
   PROJECT_ID: "note-sharing-390521"
-  IMAGE_NAME: "ShahiNotesImage"
-  CONTAINER_NAME: "SahiNotes"
   REGION: "asia-south1"
-  SERVICE_NAME: "Shahi-Notes-service"
-  REPOSITORY_NAME: "shahi-notes"
-  PORT: 8000
   TAG: ${{ github.sha }}
 
-# jobs: Defines the work to be done by this workflow.
 jobs:
   integration:
     name: Continuous Integration
     runs-on: ubuntu-latest
     steps:
-      
       - name: Checkout Code
         uses: actions/checkout@v3
 
@@ -43,72 +32,53 @@ jobs:
       - name: Run unit tests
         run: echo "Running unit tests"
 
-
   build-and-push-image:
     name: Continuous Delivery
     needs: integration
     runs-on: ubuntu-latest
     steps:
-      # Set up Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-    
-      # Build and push Docker image
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: ${{ env.CONTAINER_NAME }}:${{ env.TAG }}
-          builder: |
-            docker buildx create --use --name ${{ IMAGE_NAME }}
-            docker buildx build \
-              --platform linux/amd64,linux/arm64 \
-              --load \
-              --tag ${{ env.CONTAINER_NAME }}:${{ env.TAG }} \
-              --tag ${{ env.CONTAINER_NAME }}:${{ env.TAG }} \
-              .
-      
-      # Authenticate with GCP using a service account
-      - name: Configure gcloud
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Build and Push Docker Images
+        run: |
+          docker-compose build
+          docker-compose push
+
+      - name: Authenticate with GCP using a service account
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ env.PROJECT_ID }}
-          service_account_email: "note-sharing@note-sharing-390521.iam.gserviceaccount.com"
           service_account_key: ${{ secrets.SECRET_KEY }}
           export_default_credentials: true
-      
-      # Configure Docker Credential Helper for Artifact Registry
-      - name: Configure Docker Credential Helper for Artifact Registry
-        run: |
-          gcloud auth configure-docker asia-south1-docker.pkg.dev
-      
-      - name: Push Docker Image to Artifact Registry
-        run: |
-          docker push asia-south1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:${{ env.TAG }}
 
-      - name: Echo Image Name
+      - name: Push Docker Images to Artifact Registry
         run: |
-          echo "Pushed Docker image asia-south1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:${{ env.TAG }}"
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev
+          docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/application:${{ env.TAG }}
+          docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/mongodb:${{ env.TAG }}
 
-  
-  Continuous-Deployment:
+      - name: Echo Image Names
+        run: |
+          echo "Pushed Docker image ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/application:${{ env.TAG }}"
+          echo "Pushed Docker image ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/mongodb:${{ env.TAG }}"
+
+  continuous-deployment:
     needs: build-and-push-image
     runs-on: self-hosted
     steps:
-      - name: Pull Latest Docker Image from artifact-registry
+      - name: Pull Latest Docker Images from Artifact Registry
         run: |
-          docker pull asia-south1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}/${{ env.TAG }}
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev
+          docker-compose pull
 
-
-      - name: Stop and Remove Previous Container
+      - name: Stop and Remove Previous Containers
         run: |
-          docker stop ${{ env.CONTAINER_NAME }} || true
-          docker rm ${{ env.CONTAINER_NAME }} || true
+          docker-compose down --volumes
 
-      - name: Run Docker Image
+      - name: Run Docker Containers
         run: |
-          docker run -dp ${{ env.PORT }}:${{ env.PORT }} --name ${{ env.CONTAINER_NAME }} gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          docker-compose up -d
 
       - name: Clean Previous Images and Containers
         run: |
