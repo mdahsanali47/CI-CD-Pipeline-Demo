@@ -14,9 +14,10 @@ permissions:
   contents: read
 
 env:
+  MONGODB_URI: ${{ secrets.MONGO_DB_URL }}
   PROJECT_ID: "note-sharing-390521"
   REGION: "asia-south1"
-  TAG: ${{ github.sha }}
+  TAG: latest
 
 jobs:
   integration:

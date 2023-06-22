@@ -1,5 +1,5 @@
 # Create a new Docker image based on Node.js image
-FROM node:18-alpine3.15
+FROM node:latest
 
 ENV NODE_ENV=production
 
