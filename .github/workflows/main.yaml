@@ -80,7 +80,8 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: |
           export DOCKER_CONFIG="${HOME}/.docker"
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev --config="${DOCKER_CONFIG}"
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev
+
 
       - name: Pull Latest Docker Images from Artifact Registry
         run: |
