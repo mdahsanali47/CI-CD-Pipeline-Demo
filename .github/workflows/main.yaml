@@ -16,7 +16,6 @@ permissions:
 env:
   MY_REPO: sahi-notes
   IMAGE_1: application
-  IMAGE_2: mongodb
   PROJECT_ID: note-sharing-390521
   REGION: asia-south1
   TAG: latest
@@ -63,14 +62,11 @@ jobs:
         run: |
           gcloud auth configure-docker $REGION-docker.pkg.dev
           docker tag ci-cd-pipeline-demo_application:latest $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:$TAG
-          docker tag mongo:latest $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_2:$TAG
           docker push $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:latest
-          docker push $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_2:latest
 
       - name: Echo Image Names
         run: |
           echo "Pushed Docker image ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.MY_REPO }}/${IMAGE_1}:${{ env.TAG }}"
-          echo "Pushed Docker image ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.MY_REPO }}/${IMAGE_2}:${{ env.TAG }}"
 
   continuous-deployment:
     needs: build-and-push-image
