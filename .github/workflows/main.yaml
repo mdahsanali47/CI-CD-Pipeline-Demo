@@ -14,6 +14,7 @@ permissions:
   contents: read
 
 env:
+  MY_REPO: sahi-notes
   IMAGE_1: application
   IMAGE_2: mongodb
   PROJECT_ID: note-sharing-390521
@@ -63,15 +64,15 @@ jobs:
           GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
         run: |
           gcloud auth configure-docker ${REGION}-docker.pkg.dev
-          docker tag $IMAGE_1:latest ${REGION}-docker.pkg.dev/$PROJECT_ID/sahi-notes/$IMAGE_1:$GIT_TAG
-          docker tag $IMAGE_2:latest ${REGION}-docker.pkg.dev/$PROJECT_ID/sahi-notes/$IMAGE_2:$GIT_TAG
-          docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/application:${{ env.TAG }}
-          docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/mongodb:${{ env.TAG }}
+          docker tag app ${REGION}-docker.pkg.dev/$PROJECT_ID/${{ env.MY_REPO }}/${IMAGE_1}:$GIT_TAG
+          docker tag mongo ${REGION}-docker.pkg.dev/$PROJECT_ID/${{ env.MY_REPO }}/${IMAGE_2}:$GIT_TAG
+          docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.MY_REPO }}/${IMAGE_1}:${{ env.TAG }}
+          docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.MY_REPO }}/${IMAGE_2}:${{ env.TAG }}
 
       - name: Echo Image Names
         run: |
-          echo "Pushed Docker image ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/application:${{ env.TAG }}"
-          echo "Pushed Docker image ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/mongodb:${{ env.TAG }}"
+          echo "Pushed Docker image ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.MY_REPO }}/${IMAGE_1}:${{ env.TAG }}"
+          echo "Pushed Docker image ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.MY_REPO }}/${IMAGE_2}:${{ env.TAG }}"
 
   continuous-deployment:
     needs: build-and-push-image
