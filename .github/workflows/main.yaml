@@ -60,14 +60,12 @@ jobs:
           gcloud auth configure-docker ${REGION}-docker.pkg.dev
 
       - name: Push Docker Images to Artifact Registry
-        env:
-          GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
         run: |
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev
-          docker tag app ${REGION}-docker.pkg.dev/$PROJECT_ID/${{ env.MY_REPO }}/${IMAGE_1}:$GIT_TAG
-          docker tag mongo ${REGION}-docker.pkg.dev/$PROJECT_ID/${{ env.MY_REPO }}/${IMAGE_2}:$GIT_TAG
-          docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.MY_REPO }}/${IMAGE_1}:${{ env.TAG }}
-          docker push ${REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.MY_REPO }}/${IMAGE_2}:${{ env.TAG }}
+          gcloud auth configure-docker $REGION-docker.pkg.dev
+          docker tag app $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:$TAG
+          docker tag mongo $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_2:$TAG
+          docker push $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:latest
+          docker push $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_2:latest
 
       - name: Echo Image Names
         run: |
