@@ -57,7 +57,13 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: |
           gcloud auth configure-docker ${REGION}-docker.pkg.dev
-
+      
+      - name: Grant Artifact Registry permissions
+        env:
+          YOUR_SERVICE_ACCOUNT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+        run: |
+          gcloud projects add-iam-policy-binding note-sharing-390521 --member="serviceAccount:<YOUR_SERVICE_ACCOUNT_EMAIL>" --role="roles/artifactregistry.writer"
+        
       - name: Push Docker Images to Artifact Registry
         run: |
           docker tag ci-cd-pipeline-demo_application:latest $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:$TAG
