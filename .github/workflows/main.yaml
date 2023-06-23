@@ -60,9 +60,6 @@ jobs:
 
       - name: Push Docker Images to Artifact Registry
         run: |
-          cat key.json | docker login -u _json_key_base64 --password-stdin \
-          https://asia-south1-docker.pkg.dev
-
           docker tag ci-cd-pipeline-demo_application:latest $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:$TAG
           docker push $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:latest
 
