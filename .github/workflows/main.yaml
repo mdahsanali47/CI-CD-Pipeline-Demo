@@ -73,7 +73,6 @@ jobs:
     
       - name: Pull Latest Docker Images from Artifact Registry
         run: |
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev
           docker-compose pull 
       - name: Stop and Remove Previous Containers
         run: |
