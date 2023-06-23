@@ -56,11 +56,16 @@ jobs:
 
       - name: Configure Docker for Artifact Registry
         run: |
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev
+          gcloud auth configure-docker \
+          asia-south1-docker.pkg.dev
 
       - name: Push Docker Images to Artifact Registry
         run: |
-          gcloud auth configure-docker $REGION-docker.pkg.dev
+          gcloud auth print-access-token \
+          --impersonate-service-account note-sharing@note-sharing-390521.iam.gserviceaccount.com | docker login \
+          -u oauth2accesstoken \
+          --password-stdin https://asia-south1-docker.pkg.dev
+          
           docker tag ci-cd-pipeline-demo_application:latest $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:$TAG
           docker push $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:latest
 
