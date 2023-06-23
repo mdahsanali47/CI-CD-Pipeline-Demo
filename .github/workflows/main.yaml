@@ -1,6 +1,6 @@
 # GitHub Actions workflow for deploying a Node.js/Express application to Google Cloud Platform (GCP) using a Docker-compose.
 
-name: Deploy to GCp
+name: Deploy to GCP
 
 on:
   push:
