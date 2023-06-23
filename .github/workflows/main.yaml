@@ -62,8 +62,8 @@ jobs:
       - name: Push Docker Images to Artifact Registry
         run: |
           gcloud auth configure-docker $REGION-docker.pkg.dev
-          docker tag app $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:$TAG
-          docker tag mongo $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_2:$TAG
+          docker tag ci-cd-pipeline-demo_application:latest $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:$TAG
+          docker tag mongo:latest $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_2:$TAG
           docker push $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_1:latest
           docker push $REGION-docker.pkg.dev/$PROJECT_ID/$MY_REPO/$IMAGE_2:latest
 
